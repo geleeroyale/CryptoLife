@@ -55,9 +55,15 @@ class AddressValidator extends Component {
 
   findAddress() {
     const bs =
-      "http://cors-anywhere.herokuapp.com/https://blockscout.com/eth/ropsten/api?module=account&action=txlist&address=0xF7d934776Da4d1734f36d86002dE36954d7Dd528";
+      //    "http://cors-anywhere.herokuapp.com/https://blockscout.com/eth/ropsten/api?module=account&action=txlist&address=0xF7d934776Da4d1734f36d86002dE36954d7Dd528";
+      "https://blockscout.com/eth/ropsten/api?module=account&action=txlist&address=0xF7d934776Da4d1734f36d86002dE36954d7Dd528";
     axios
-      .get(bs, { credentials: false })
+      .get(bs, {
+        credentials: false,
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        }
+      })
       .then(response => {
         // handle success
         if (response.data && response.data.status === "1") {

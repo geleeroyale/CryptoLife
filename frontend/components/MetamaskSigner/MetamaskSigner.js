@@ -136,6 +136,7 @@ class MetamaskSigner extends Component {
     });
   }
 
+  // save data on IPFS & send transaction immediately
   saveData() {
     return new Promise((resolve, reject) => {
       const msgParams = this.makeData();
@@ -146,13 +147,14 @@ class MetamaskSigner extends Component {
           this.abi,
           "0xf7d934776da4d1734f36d86002de36954d7dd528",
           {
-            //from: '0x1234567890123456789012345678901234567891', // default from address
-            //gasPrice: '20000000000' // default gas price in wei, 20 gwei in this case
+            from: this.state.account
           }
         );
-
-        myContract.methods.saveEth(result).then(tx => {
-          console.log("tx hash");
+        myContract.methods.saveEth(result).send((err, tx) => {
+          if (err) {
+            return reject(err);
+          }
+          resolve(tx);
         });
       });
     });
