@@ -141,8 +141,6 @@ class MetamaskSigner extends Component {
     return new Promise((resolve, reject) => {
       const msgParams = this.makeData();
       this.ipfs.addJSON({ payload: msgParams }, (err, result) => {
-        resolve(result);
-
         var myContract = new this.web3.eth.Contract(
           this.abi,
           "0xf7d934776da4d1734f36d86002de36954d7dd528",
