@@ -5,33 +5,12 @@ import Head from 'next/head'
 import Web3 from 'web3'
 import parseDomain from 'domain-name-parser'
 
-import { Router, Link } from '../routes'
+import { Router } from '../routes'
 
 import SearchBar from '../components/SearchBar'
 import Button from '../components/Button'
 
 const web3 = new Web3()
-
-injectGlobal`
-  ${styledNormalize}
-  body {
-    line-height: 1.5;
-    background-color: black;
-  }
-  html {
-    box-sizing: border-box;
-    overflow-wrap: break-word;
-    margin: 0;
-  }
-  *,
-  *::before,
-  *::after {
-    box-sizing: inherit;
-    overflow-wrap: break-word;
-    margin: 0;
-    font-family: 'Roboto Mono', monospace;
-  }
-`
 
 const Container = styled.div`
   background: url('static/images/bg.jpeg') no-repeat;
