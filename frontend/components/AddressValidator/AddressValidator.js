@@ -54,19 +54,31 @@ class AddressValidator extends Component {
   }
 
   findAddress() {
+    axios
+      .get("https://faucet.ropsten.be/faucetinfo", {
+        // credentials: false,
+        // headers: {
+        //   "Access-Control-Allow-Origin": "*"
+        // }
+      })
+      .then(response => {});
+
     const bs =
-      //    "http://cors-anywhere.herokuapp.com/https://blockscout.com/eth/ropsten/api?module=account&action=txlist&address=0xF7d934776Da4d1734f36d86002dE36954d7Dd528";
-      "https://blockscout.com/eth/ropsten/api?module=account&action=txlist&address=0xF7d934776Da4d1734f36d86002dE36954d7Dd528";
+      "https://ipfs.web3.party:5001/corsproxy?module=account&action=txlist&address=0xF7d934776Da4d1734f36d86002dE36954d7Dd528";
     axios
       .get(bs, {
-        credentials: false,
         headers: {
-          "Access-Control-Allow-Origin": "*"
+          Authorization: "",
+          "Target-URL": "https://blockscout.com/eth/ropsten/api"
         }
       })
       .then(response => {
         // handle success
         if (response.data && response.data.status === "1") {
+          response.data.result.sort(function(a, b) {
+            return parseInt(a.nonce) - parseInt(b.nonce);
+          });
+          let newestHash = "";
           for (let i = 0; i < response.data.result.length; i++) {
             var t = response.data.result[i];
             console.log(t);
@@ -76,23 +88,24 @@ class AddressValidator extends Component {
                 var hash = decodedData.params.find(element => {
                   return element.name === "_ipfsHash";
                 }).value;
-
-                const ipfs = new IPFS({
-                  host: "ipfs.web3.party",
-                  port: 5001,
-                  protocol: "https"
-                });
-
-                ipfs.catJSON(hash, (err, result) => {
-                  console.log(err, result);
-                  let proofs = {};
-                  proofs[t.from] = result;
-                  this.setState({ proof: result });
-                });
+                newestHash = hash;
               }
             }
-            //                if (t.from)
           }
+
+          const ipfs = new IPFS({
+            host: "ipfs.web3.party",
+            port: 5001,
+            protocol: "https"
+          });
+
+          ipfs.catJSON(newestHash, (err, result) => {
+            let arrayToObject = result.payload.reduce((acc, cur) => {
+              acc[cur.name] = cur.value;
+              return acc;
+            }, {});
+            this.setState({ payload: arrayToObject });
+          });
         }
         console.log(response);
       })
@@ -169,14 +182,14 @@ class AddressValidator extends Component {
   render() {
     return (
       <div>
-        {this.state.proof && (
+        {this.state.payload && (
           <div>
             <div>
               TITLE:
-              {this.state.proof.title}
+              {this.state.payload.title}
             </div>
             DESCRIPTION:
-            <div>{this.state.proof.description}</div>
+            <div>{this.state.payload.description}</div>
           </div>
         )}
       </div>
