@@ -186,10 +186,10 @@ class AddressValidator extends Component {
           <div>
             <div>
               TITLE:
-              {this.state.payload.title}
+              {this.state.payload.Title}
             </div>
             DESCRIPTION:
-            <div>{this.state.payload.description}</div>
+            <div>{this.state.payload.Description}</div>
           </div>
         )}
       </div>
